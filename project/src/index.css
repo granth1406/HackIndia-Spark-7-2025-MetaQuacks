@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans text-white overflow-x-hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold leading-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg font-medium px-6 py-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-900;
+  }
+
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 text-white shadow-glow-primary;
+  }
+
+  .btn-accent {
+    @apply bg-accent-500 hover:bg-accent-600 focus:ring-accent-500 text-dark-900 font-semibold shadow-glow-accent;
+  }
+
+  .btn-outline {
+    @apply border-2 border-white/20 hover:bg-white/10 text-white;
+  }
+
+  .glass-card {
+    @apply bg-surface-medium backdrop-blur-lg rounded-2xl border border-white/10;
+  }
+
+  .section {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-600;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-accent-400 to-highlight-400;
+}
+
+/* Grid background */
+.grid-bg {
+  @apply bg-grid bg-[length:40px_40px];
+}
