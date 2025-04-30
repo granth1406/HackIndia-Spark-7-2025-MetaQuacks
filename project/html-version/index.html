@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProofPass - Blockchain Credentials</title>
-    <link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="styles/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles/main.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,11 +16,11 @@
 <body class="min-h-screen bg-gradient-to-b from-dark-900 via-dark-800 to-dark-900 text-white">
     <div id="particle-container" class="particle-background"></div>
 
-    <header id="header" class="fixed top-0 left-0 right-0 z-50 py-5 transition-all">
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 py-5 transition-all" style="padding: 5px; background-color: transparent;">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fa-solid fa-shield-halved"></i>
+                    <img src="styles/favicon.svg" alt="" class="logo" style="width: 10%;">
                     <span>ProofPass</span>
                 </div>
 
@@ -110,45 +110,91 @@
             <div class="bottom-fade"></div>
         </section>
 
-        <!-- Features Section -->
+        <!-- Secure Your Digital Identity Section (Formerly Features Section) -->
         <section id="features" class="features-section reveal">
             <div class="container">
                 <div class="section-header">
-                    <h2>Key <span class="gradient-text">Features</span></h2>
-                    <p>ProofPass provides innovative solutions for secure digital identity management</p>
+                    <h2>Secure Your <span class="gradient-text">Digital Identity</span></h2>
+                    <p>ProofPass leverages blockchain technology to create tamper-proof, verifiable credentials that you own and control.</p>
                 </div>
                 
                 <div class="features-grid">
                     <div class="feature-card reveal-item">
                         <div class="feature-icon">
+                            <i class="fa-solid fa-shield-check"></i>
+                        </div>
+                        <h3>Tamper-Proof Credentials</h3>
+                        <p>Credentials are stored on the blockchain, making them impossible to forge or alter without detection.</p>
+                    </div>
+                    
+                    <div class="feature-card reveal-item">
+                        <div class="feature-icon">
                             <i class="fa-solid fa-lock"></i>
                         </div>
-                        <h3>Blockchain Security</h3>
-                        <p>Immutable records secured by decentralized blockchain technology</p>
+                        <h3>Secure Storage</h3>
+                        <p>Your credentials are encrypted and securely stored with military-grade security protocols.</p>
                     </div>
                     
                     <div class="feature-card reveal-item">
                         <div class="feature-icon">
-                            <i class="fa-solid fa-check-double"></i>
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <h3>Decentralized Verification</h3>
+                        <p>Verification happens across a distributed network, eliminating single points of failure.</p>
+                    </div>
+                    
+                    <div class="feature-card reveal-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </div>
+                        <h3>Selective Disclosure</h3>
+                        <p>Share only the credentials you choose, maintaining privacy while proving your qualifications.</p>
+                    </div>
+
+                    <div class="feature-card reveal-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <h3>Biometric Authentication</h3>
+                        <p>Add an extra layer of security with optional biometric verification for access.</p>
+                    </div>
+
+                    <div class="feature-card reveal-item">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-clock"></i>
                         </div>
                         <h3>Instant Verification</h3>
-                        <p>Verify credentials in seconds without third-party intermediaries</p>
+                        <p>Credentials can be verified in seconds, eliminating lengthy background check processes.</p>
                     </div>
-                    
-                    <div class="feature-card reveal-item">
-                        <div class="feature-icon">
-                            <i class="fa-solid fa-user-shield"></i>
-                        </div>
-                        <h3>User Control</h3>
-                        <p>You own your data and decide who can access your credentials</p>
+                </div>
+
+                <div class="digital-vault-info">
+                    <div class="digital-vault-content">
+                        <h3>Your Credentials in a <span class="gradient-text">Secure Digital Vault</span></h3>
+                        <p>ProofPass stores your credentials in a secure digital vault that only you can access.
+                        Share them securely with employers, educational institutions, or anyone who needs to
+                        verify your qualifications.</p>
+                        <ul class="feature-list">
+                            <li>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Encrypted storage with zero-knowledge proofs</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Multi-factor authentication for maximum security</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Granular control over who can access what information</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Automated verification without exposing sensitive data</span>
+                            </li>
+                        </ul>
                     </div>
-                    
-                    <div class="feature-card reveal-item">
-                        <div class="feature-icon">
-                            <i class="fa-solid fa-globe"></i>
-                        </div>
-                        <h3>Global Compatibility</h3>
-                        <p>Works across borders and different compliance frameworks</p>
+                    <div class="features-vault-visual">
+                        <div class="digital-vault-preview"></div>
                     </div>
                 </div>
             </div>
@@ -194,9 +240,9 @@
                     </div>
                 </div>
                 
-                <div class="digital-vault-container">
-                    <!-- Digital Vault Visualization with Three.js -->
-                    <div class="digital-vault"></div>
+                <!-- Timeline animation container -->
+                <div class="timeline-container">
+                    <div class="timeline-animation"></div>
                 </div>
             </div>
         </section>

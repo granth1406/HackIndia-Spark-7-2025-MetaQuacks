@@ -1,14 +1,16 @@
 /* Main CSS file for ProofPass HTML version */
 
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Merienda:wght@300..900&family=Permanent+Marker&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&family=Tektur:wght@400..900&family=Yatra+One&display=swap');
+
 /* ---------- VARIABLES ---------- */
 :root {
   /* Colors */
-  --color-primary: #4f46e5;
+  --color-primary: #000000;
   --color-primary-light: #6366f1;
   --color-primary-dark: #4338ca;
-  --color-secondary: #10b981;
-  --color-dark-900: #0f172a;
-  --color-dark-800: #1e293b;
+  --color-secondary: #048b5e;
+  --color-dark-900: #070d1a; /* Darkened from #0f172a */
+  --color-dark-800: #121c2b; /* Darkened from #1e293b */
   --color-dark-700: #334155;
   --color-dark-600: #475569;
   --color-dark-500: #64748b;
@@ -22,16 +24,40 @@
   --gradient-dark: linear-gradient(to bottom, var(--color-dark-900), var(--color-dark-800), var(--color-dark-900));
   
   /* Typography */
-  --font-family: 'Inter', sans-serif;
-  --font-size-xs: 0.75rem;  /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem;   /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem;  /* 20px */
-  --font-size-2xl: 1.5rem;  /* 24px */
-  --font-size-3xl: 1.875rem;/* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-  --font-size-5xl: 3rem;    /* 48px */
+  /* Main font families */
+  --font-family-heading: 'Space Grotesk', sans-serif;
+  --font-family-body: 'Space Grotesk', sans-serif;
+  --font-family-accent: 'Space Grotesk', sans-serif;
+  --font-family-creative: 'Space Grotesk', sans-serif;
+  --font-family-handwriting: 'Space Grotesk', sans-serif;
+  --font-family-elegant: 'Merienda', serif;
+  --font-family-playful: 'Sour Gummy', sans-serif;
+  --font-family-unique: 'Yatra One', cursive;
+  --font-family-display: 'Playwrite GB S', sans-serif;
+  --font-family: var(--font-family-body);
+  
+  /* Font sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-6xl: 3.75rem;   /* 60px */
+
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   
   /* Spacing */
   --spacing-1: 0.25rem;  /* 4px */
@@ -177,9 +203,25 @@ ul, ol {
   margin: 0 auto var(--spacing-12);
 }
 
+.section-header h2 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-3);
+  line-height: var(--line-height-tight);
+}
+
+@media (min-width: 768px) {
+  .section-header h2 {
+    font-size: var(--font-size-4xl);
+  }
+}
+
 .section-header p {
   font-size: var(--font-size-lg);
   color: var(--color-gray-300);
+  max-width: 600px;
+  margin: 0 auto var(--spacing-10);
+  line-height: var(--line-height-relaxed);
 }
 
 /* ---------- BUTTONS ---------- */
@@ -526,8 +568,9 @@ header.scrolled {
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-6);
+  margin-bottom: var(--spacing-16);
 }
 
 .feature-card {
@@ -535,11 +578,13 @@ header.scrolled {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
   padding: var(--spacing-6);
-  transition: var(--transition-transform);
+  transition: var(--transition-all);
+  height: 100%;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
 }
 
 .feature-icon {
@@ -548,7 +593,7 @@ header.scrolled {
   justify-content: center;
   width: 60px;
   height: 60px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background: var(--gradient-primary);
   margin-bottom: var(--spacing-4);
   font-size: var(--font-size-2xl);
@@ -556,13 +601,94 @@ header.scrolled {
 
 .feature-card h3 {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-3);
 }
 
 .feature-card p {
-  color: var(--color-gray-300);
   font-size: var(--font-size-base);
-  margin-bottom: 0;
+  color: var(--color-gray-300);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Digital Vault Info Section */
+.digital-vault-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-20);
+}
+
+@media (min-width: 992px) {
+  .digital-vault-info {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.digital-vault-content h3 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .digital-vault-content h3 {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+.digital-vault-content p {
+  color: var(--color-gray-300);
+  margin-bottom: var(--spacing-6);
+  line-height: 1.6;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-4);
+}
+
+.feature-list li i {
+  color: var(--color-secondary);
+  margin-right: var(--spacing-3);
+  margin-top: var(--spacing-1);
+}
+
+.feature-list li span {
+  color: var(--color-gray-300);
+}
+
+.features-vault-visual {
+  height: 400px;
+  width: 100%;
+}
+
+.digital-vault-preview {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.digital-vault-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(79, 70, 229, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.3) 0%, transparent 50%);
+  z-index: 0;
 }
 
 /* ---------- HOW IT WORKS SECTION ---------- */
@@ -616,10 +742,13 @@ header.scrolled {
 }
 
 .step h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-2);
 }
 
 .step p {
+  font-size: var(--font-size-base);
   color: var(--color-gray-300);
 }
 
@@ -1083,4 +1212,160 @@ header.scrolled {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ---------- FEATURES SECTION (Secure Your Digital Identity) ---------- */
+.features-section {
+  padding: var(--spacing-16) 0;
+  position: relative;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-16);
+}
+
+.feature-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  transition: var(--transition-all);
+  height: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-xl);
+  background: var(--gradient-primary);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-2xl);
+}
+
+.feature-card h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-3);
+}
+
+.feature-card p {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-300);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Digital Vault Info Section */
+.digital-vault-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-8);
+  margin-top: var(--spacing-20);
+}
+
+@media (min-width: 992px) {
+  .digital-vault-info {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.digital-vault-content h3 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-6);
+}
+
+@media (min-width: 768px) {
+  .digital-vault-content h3 {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+.digital-vault-content p {
+  color: var(--color-gray-300);
+  margin-bottom: var(--spacing-6);
+  line-height: 1.6;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-4);
+}
+
+.feature-list li i {
+  color: var(--color-secondary);
+  margin-right: var(--spacing-3);
+  margin-top: var(--spacing-1);
+}
+
+.feature-list li span {
+  color: var(--color-gray-300);
+}
+
+.features-vault-visual {
+  height: 400px;
+  width: 100%;
+}
+
+.digital-vault-preview {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.digital-vault-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(79, 70, 229, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.3) 0%, transparent 50%);
+  z-index: 0;
+}
+
+@media (min-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Timeline animation container */
+.timeline-container {
+  margin-top: var(--spacing-16);
+  width: 100%;
+  height: 350px;
+  position: relative;
+}
+
+.timeline-animation {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
 }

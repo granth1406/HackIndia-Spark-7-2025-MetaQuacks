@@ -7,7 +7,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     initCredentialCard3D();
     initNetworkGraph();
-    initTimelineAnimation();
+    initDigitalVaultAnimation();
+    initTimelineAnimation(); // Added timeline animation for How It Works section
 });
 
 /**
@@ -330,86 +331,317 @@ function initNetworkGraph() {
 }
 
 /**
- * GSAP timeline animation for the "How It Works" section
+ * Create animated digital vault for the Secure Digital Vault section
  */
-function initTimelineAnimation() {
-    const section = document.getElementById('how-it-works');
-    if (!section) return;
+function initDigitalVaultAnimation() {
+    const container = document.querySelector('.digital-vault-preview');
+    if (!container) return;
     
-    const steps = document.querySelectorAll('.step');
-    const connectors = document.querySelectorAll('.step-connector');
-    const digitalVault = document.querySelector('.digital-vault');
+    // Create scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
     
-    // Initialize GSAP timeline
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+    
+    // Create vault structure
+    const vaultGroup = new THREE.Group();
+    scene.add(vaultGroup);
+    
+    // Vault body
+    const vaultGeometry = new THREE.BoxGeometry(3, 2, 2);
+    const vaultMaterial = new THREE.MeshPhongMaterial({
+        color: 0x1e293b,
+        specular: 0x111111,
+        shininess: 30,
+        transparent: true,
+        opacity: 0.9
+    });
+    
+    const vault = new THREE.Mesh(vaultGeometry, vaultMaterial);
+    vaultGroup.add(vault);
+    
+    // Vault door
+    const doorGeometry = new THREE.BoxGeometry(0.1, 1.8, 1.8);
+    const doorMaterial = new THREE.MeshPhongMaterial({
+        color: 0x334155,
+        specular: 0x333333,
+        shininess: 50,
+        transparent: true,
+        opacity: 0.9
+    });
+    
+    const door = new THREE.Mesh(doorGeometry, doorMaterial);
+    door.position.x = -1.45;
+    vaultGroup.add(door);
+    
+    // Door handle
+    const handleGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.5, 16);
+    const handleMaterial = new THREE.MeshPhongMaterial({
+        color: 0xb0b0b0,
+        specular: 0xffffff,
+        shininess: 100
+    });
+    
+    const handle = new THREE.Mesh(handleGeometry, handleMaterial);
+    handle.position.set(-1.6, 0, 0);
+    handle.rotation.z = Math.PI / 2;
+    vaultGroup.add(handle);
+    
+    // Security panel with digital display
+    const panelGeometry = new THREE.BoxGeometry(0.1, 0.4, 0.6);
+    const panelMaterial = new THREE.MeshPhongMaterial({
+        color: 0x222222,
+        specular: 0x111111,
+        shininess: 50
+    });
+    
+    const panel = new THREE.Mesh(panelGeometry, panelMaterial);
+    panel.position.set(-1.56, 0.6, 0);
+    vaultGroup.add(panel);
+    
+    // Digital readout (changing numbers)
+    const displayCanvas = document.createElement('canvas');
+    displayCanvas.width = 64;
+    displayCanvas.height = 32;
+    const displayCtx = displayCanvas.getContext('2d');
+    
+    displayCtx.fillStyle = '#10b981';
+    displayCtx.fillRect(0, 0, 64, 32);
+    
+    const displayTexture = new THREE.CanvasTexture(displayCanvas);
+    
+    const displayGeometry = new THREE.PlaneGeometry(0.5, 0.25);
+    const displayMaterial = new THREE.MeshBasicMaterial({
+        map: displayTexture,
+        transparent: true
+    });
+    
+    const display = new THREE.Mesh(displayGeometry, displayMaterial);
+    display.position.set(-1.51, 0.6, 0);
+    vaultGroup.add(display);
+    
+    // Locks/bolts on the side of the door
+    const createLock = (posY) => {
+        const lockGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.5, 8);
+        const lockMaterial = new THREE.MeshPhongMaterial({
+            color: 0x888888,
+            specular: 0xffffff,
+            shininess: 30
+        });
+        
+        const lock = new THREE.Mesh(lockGeometry, lockMaterial);
+        lock.rotation.z = Math.PI / 2;
+        lock.position.set(-1.2, posY, 0.7);
+        
+        return lock;
+    };
+    
+    const locks = [];
+    for (let i = 0; i < 3; i++) {
+        const lock = createLock(0.5 - i * 0.5);
+        locks.push(lock);
+        vaultGroup.add(lock);
+    }
+    
+    // Add glowing effects around the edges of the vault
+    const createGlowingEdge = (width, height, depth, x, y, z) => {
+        const edgeGeometry = new THREE.BoxGeometry(width, height, depth);
+        const edgeMaterial = new THREE.MeshBasicMaterial({
+            color: 0x4f46e5,
+            transparent: true,
+            opacity: 0.6
+        });
+        
+        const edge = new THREE.Mesh(edgeGeometry, edgeMaterial);
+        edge.position.set(x, y, z);
+        return edge;
+    };
+    
+    // Add glowing edges
+    const edgeTop = createGlowingEdge(3.1, 0.05, 2.1, 0, 1.02, 0);
+    const edgeBottom = createGlowingEdge(3.1, 0.05, 2.1, 0, -1.02, 0);
+    const edgeLeft = createGlowingEdge(0.05, 2.1, 2.1, -1.52, 0, 0);
+    const edgeRight = createGlowingEdge(0.05, 2.1, 2.1, 1.52, 0, 0);
+    
+    vaultGroup.add(edgeTop, edgeBottom, edgeLeft, edgeRight);
+    
+    // Create floating credentials (document particles)
+    const credentialCount = 8;
+    const credentials = [];
+    
+    for (let i = 0; i < credentialCount; i++) {
+        // Choose between document or certificate shape
+        const isDocument = Math.random() > 0.3;
+        
+        const width = isDocument ? 0.6 : 0.5;
+        const height = isDocument ? 0.8 : 0.7;
+        
+        const geometry = new THREE.PlaneGeometry(width, height);
+        const color = Math.random() > 0.5 ? 0x4f46e5 : 0x10b981;
+        
+        const material = new THREE.MeshBasicMaterial({
+            color: color,
+            transparent: true,
+            opacity: 0.7,
+            side: THREE.DoubleSide
+        });
+        
+        const credential = new THREE.Mesh(geometry, material);
+        
+        // Position inside vault
+        credential.position.set(
+            (Math.random() - 0.5) * 1.8,
+            (Math.random() - 0.5) * 1.2,
+            (Math.random() - 0.5) * 1.2
+        );
+        
+        // Random rotation
+        credential.rotation.x = Math.random() * Math.PI;
+        credential.rotation.y = Math.random() * Math.PI;
+        
+        credentials.push({
+            mesh: credential,
+            initialY: credential.position.y,
+            floatSpeed: Math.random() * 0.01 + 0.005,
+            rotateSpeed: Math.random() * 0.01 + 0.005
+        });
+        
+        vaultGroup.add(credential);
+    }
+    
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(0, 1, 2);
+    scene.add(directionalLight);
+    
+    const blueLight = new THREE.PointLight(0x4f46e5, 0.8, 10);
+    blueLight.position.set(-2, 2, 2);
+    scene.add(blueLight);
+    
+    const greenLight = new THREE.PointLight(0x10b981, 0.8, 10);
+    greenLight.position.set(2, -2, -2);
+    scene.add(greenLight);
+    
+    // Position camera
+    camera.position.z = 4.5;
+    
+    // Add interaction with mouse
+    let mouseX = 0;
+    let mouseY = 0;
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
+    
+    document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX - windowHalfX) / 100;
+        mouseY = (event.clientY - windowHalfY) / 100;
+    });
+    
+    // Set up animation with GSAP
     const timeline = gsap.timeline({
         scrollTrigger: {
-            trigger: section,
-            start: "top 60%",
-            end: "bottom 60%",
-            scrub: 1,
-            toggleActions: "play none none reverse"
+            trigger: container,
+            start: "top bottom-=100",
+            end: "bottom top+=100",
+            toggleActions: "play none none reverse",
+            scrub: 0.5
         }
     });
     
-    // Setup initial states
-    gsap.set(steps, { opacity: 0, y: 30 });
-    gsap.set(connectors, { scaleX: 0, transformOrigin: "left" });
-    
-    if (digitalVault) {
-        gsap.set(digitalVault, { opacity: 0, scale: 0.8 });
-    }
-    
-    // Animate each step and connector in sequence
-    steps.forEach((step, index) => {
-        const delay = index * 0.5;
-        
-        // Animate step
-        timeline.to(step, { 
-            opacity: 1, 
-            y: 0,
-            duration: 0.5
-        }, delay);
-        
-        // Animate connector (if not the last step)
-        if (index < steps.length - 1) {
-            timeline.to(connectors[index], { 
-                scaleX: 1,
-                duration: 0.5
-            }, delay + 0.3);
-        }
-        
-        // Add number counter animation for each step number
-        const stepNumber = step.querySelector('.step-number');
-        if (stepNumber) {
-            const value = parseInt(stepNumber.textContent);
-            timeline.fromTo(stepNumber, 
-                { textContent: 0 },
-                {
-                    duration: 0.5,
-                    textContent: value,
-                    roundProps: "textContent"
-                }, 
-                delay
-            );
-        }
+    // Animate door opening when scrolling to the section
+    timeline.to(door.position, {
+        x: -2,
+        duration: 1,
+        ease: "power2.out"
     });
     
-    // Animate digital vault at the end
-    if (digitalVault) {
-        timeline.to(digitalVault, { 
-            opacity: 1,
-            scale: 1,
-            duration: 1,
-            ease: "back.out(1.7)"
-        }, "-=0.5");
+    timeline.to(door.rotation, {
+        y: -Math.PI / 2,
+        duration: 1,
+        ease: "power2.out"
+    }, "-=0.5");
+    
+    timeline.to(handle.rotation, {
+        y: Math.PI,
+        duration: 0.5,
+        ease: "power2.inOut"
+    }, "-=1.5");
+    
+    // Resize handler
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    // Animation loop
+    const clock = new THREE.Clock();
+    
+    function animate() {
+        requestAnimationFrame(animate);
         
-        // Add particles inside the digital vault
-        createDigitalVaultParticles();
+        const time = clock.getElapsedTime();
+        
+        // Update digital display
+        if (Math.floor(time * 2) % 2 === 0) {
+            displayCtx.fillStyle = '#10b981';
+            displayCtx.fillRect(0, 0, 64, 32);
+            
+            displayCtx.fillStyle = '#000';
+            displayCtx.font = '18px monospace';
+            displayCtx.textAlign = 'center';
+            displayCtx.textBaseline = 'middle';
+            
+            const code = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            displayCtx.fillText(code, 32, 16);
+            
+            displayTexture.needsUpdate = true;
+        }
+        
+        // Animate floating credentials
+        credentials.forEach(item => {
+            item.mesh.position.y = item.initialY + Math.sin(time * item.floatSpeed * 5) * 0.2;
+            item.mesh.rotation.x += item.rotateSpeed / 2;
+            item.mesh.rotation.y += item.rotateSpeed;
+        });
+        
+        // Rotate vault based on mouse movement (with damping)
+        vaultGroup.rotation.x = THREE.MathUtils.lerp(vaultGroup.rotation.x, -mouseY * 0.3, 0.05);
+        vaultGroup.rotation.y = THREE.MathUtils.lerp(vaultGroup.rotation.y, mouseX * 0.3, 0.05);
+        
+        // Animate locks/bolts
+        locks.forEach((lock, index) => {
+            const delay = index * 0.5;
+            const extended = (Math.sin(time - delay) + 1) / 2;
+            lock.position.x = -1.2 - extended * 0.3;
+        });
+        
+        // Pulse the glowing edges
+        const edgePulse = (Math.sin(time * 2) + 1) / 2;
+        [edgeTop, edgeBottom, edgeLeft, edgeRight].forEach(edge => {
+            edge.material.opacity = 0.4 + edgePulse * 0.3;
+        });
+        
+        renderer.render(scene, camera);
     }
+    
+    animate();
+    
+    // Dispatch custom event when Three.js scene is ready
+    window.dispatchEvent(new CustomEvent('three-ready'));
 }
 
 /**
  * Create animated particles inside the digital vault
+ * This function is no longer called but kept as a reference
  */
 function createDigitalVaultParticles() {
     const container = document.querySelector('.digital-vault');
