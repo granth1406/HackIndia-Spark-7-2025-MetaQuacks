@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProofPass Dashboard - Manage Your Credentials</title>
+    <link rel="icon" href="styles/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/cursor.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <div class="cursor-dot-outline"></div>
+    <div class="cursor-dot"></div>
+    
+    <!-- Dashboard Layout -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <img src="styles/favicon.svg" alt="ProofPass Logo" class="sidebar-logo">
+                <h1 class="sidebar-title">ProofPass</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#credentials" class="nav-item">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>My Credentials</span>
+                </a>
+                <a href="#wallet" class="nav-item">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="#share" class="nav-item">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Share</span>
+                </a>
+                <a href="#verification" class="nav-item">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Verification</span>
+                </a>
+                <a href="#settings" class="nav-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#help" class="help-link">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Help Center</span>
+                </a>
+                <a href="index.html" class="logout-link">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="dashboard-main">
+            <!-- Top Navigation Bar -->
+            <header class="dashboard-header">
+                <button class="mobile-menu-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search your credentials...">
+                </div>
+                
+                <div class="header-actions">
+                    <button class="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    
+                    <div class="user-profile">
+                        <img src="https://i.pravatar.cc/150?img=32" alt="User Avatar" class="avatar">
+                        <div class="user-info">
+                            <p class="user-name">Alex Johnson</p>
+                            <p class="user-role">Premium Account</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="section-title">
+                    <h2>Dashboard Overview</h2>
+                    <p>Welcome back, Alex! Here's your credential status overview.</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>12</h3>
+                            <p>Active Credentials</p>
+                        </div>
+                        <div class="stat-chart">
+                            <div class="chart-bar" style="height: 80%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>5</h3>
+                            <p>Shared Credentials</p>
+                        </div>
+                        <div class="stat-chart">
+                            <div class="chart-bar" style="height: 40%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>27</h3>
+                            <p>Credential Views</p>
+                        </div>
+                        <div class="stat-chart">
+                            <div class="chart-bar" style="height: 65%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-shield-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>100%</h3>
+                            <p>Verification Rate</p>
+                        </div>
+                        <div class="stat-chart">
+                            <div class="chart-bar" style="height: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity & Upload New Credential -->
+                <div class="dashboard-grid">
+                    <!-- Recent Activity Section -->
+                    <div class="dashboard-card recent-activity">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#all-activity" class="view-all">View All</a>
+                        </div>
+                        
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon verification">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Microsoft Certification Verified</h4>
+                                    <p>Your Azure Developer certification was verified by TechCorp Inc.</p>
+                                    <span class="timestamp">Today, 10:45 AM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon share">
+                                    <i class="fa-solid fa-share"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Credential Shared</h4>
+                                    <p>You shared your Computer Science degree with Innovate Technologies.</p>
+                                    <span class="timestamp">Yesterday, 3:20 PM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>New Credential Added</h4>
+                                    <p>Added Project Management Professional (PMP) certification to your wallet.</p>
+                                    <span class="timestamp">May 28, 2025</span>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-item">
+                                <div class="activity-icon view">
+                                    <i class="fa-solid fa-eye"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <h4>Credential Viewed</h4>
+                                    <p>GlobalHR Inc. viewed your Engineering degree credential.</p>
+                                    <span class="timestamp">May 26, 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload New Credential Section -->
+                    <div class="dashboard-card upload-credential">
+                        <div class="card-header">
+                            <h3>Add New Credential</h3>
+                        </div>
+                        
+                        <div class="upload-area">
+                            <div class="upload-icon">
+                                <i class="fa-solid fa-file-upload"></i>
+                            </div>
+                            <h4>Upload Your Credential</h4>
+                            <p>Drag and drop your certificate file here, or click to browse</p>
+                            <input type="file" id="credential-upload" class="hidden">
+                            <button class="upload-btn">Select File</button>
+                            <p class="file-types">Supported formats: PDF, JPG, PNG</p>
+                        </div>
+                        
+                        <div class="credential-types">
+                            <h4>Or Choose a Credential Type:</h4>
+                            <div class="type-grid">
+                                <div class="credential-type">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                    <span>Education</span>
+                                </div>
+                                <div class="credential-type">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <span>Certification</span>
+                                </div>
+                                <div class="credential-type">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                    <span>Employment</span>
+                                </div>
+                                <div class="credential-type">
+                                    <i class="fa-solid fa-award"></i>
+                                    <span>Achievement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Your Credentials Section -->
+                <div class="section-title">
+                    <h2>Your Credentials</h2>
+                    <div class="credential-actions">
+                        <div class="filter-dropdown">
+                            <button class="filter-btn">
+                                <i class="fa-solid fa-filter"></i>
+                                <span>Filter</span>
+                            </button>
+                        </div>
+                        <div class="sort-dropdown">
+                            <button class="sort-btn">
+                                <i class="fa-solid fa-sort"></i>
+                                <span>Sort: Newest</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="credentials-grid">
+                    <!-- Credential Card 1 -->
+                    <div class="credential-card">
+                        <div class="credential-header">
+                            <img src="https://logo.clearbit.com/microsoft.com" alt="Microsoft" class="issuer-logo">
+                            <div class="credential-actions">
+                                <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </div>
+                        <div class="credential-content">
+                            <h3>Microsoft Certified: Azure Developer Associate</h3>
+                            <p class="issuer">Issued by Microsoft</p>
+                            <div class="credential-details">
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Issued: Jan 15, 2025</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    <span>Expires: Jan 15, 2027</span>
+                                </div>
+                            </div>
+                            <div class="credential-status verified">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Blockchain Verified</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Credential Card 2 -->
+                    <div class="credential-card">
+                        <div class="credential-header">
+                            <img src="https://logo.clearbit.com/pmi.org" alt="PMI" class="issuer-logo">
+                            <div class="credential-actions">
+                                <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </div>
+                        <div class="credential-content">
+                            <h3>Project Management Professional (PMP)</h3>
+                            <p class="issuer">Issued by Project Management Institute</p>
+                            <div class="credential-details">
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Issued: May 28, 2025</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                    <span>Expires: May 28, 2028</span>
+                                </div>
+                            </div>
+                            <div class="credential-status verified">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Blockchain Verified</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Credential Card 3 -->
+                    <div class="credential-card">
+                        <div class="credential-header">
+                            <img src="https://logo.clearbit.com/mit.edu" alt="MIT" class="issuer-logo">
+                            <div class="credential-actions">
+                                <button class="action-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                                <button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </div>
+                        <div class="credential-content">
+                            <h3>Bachelor of Science in Computer Science</h3>
+                            <p class="issuer">Massachusetts Institute of Technology</p>
+                            <div class="credential-details">
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Issued: June 12, 2023</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-trophy"></i>
+                                    <span>GPA: 3.8/4.0</span>
+                                </div>
+                            </div>
+                            <div class="credential-status verified">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Blockchain Verified</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            <button class="btn btn-outline">View Details</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Credential Card 4 - Pending -->
+                    <div class="credential-card pending">
+                        <div class="credential-header">
+                            <img src="https://logo.clearbit.com/aws.amazon.com" alt="AWS" class="issuer-logo">
+                            <div class="credential-actions">
+                                <button class="action-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                            </div>
+                        </div>
+                        <div class="credential-content">
+                            <h3>AWS Certified Solutions Architect</h3>
+                            <p class="issuer">Amazon Web Services</p>
+                            <div class="credential-details">
+                                <div class="detail-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Uploaded: Apr 29, 2025</span>
+                                </div>
+                            </div>
+                            <div class="credential-status pending">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>Verification Pending</span>
+                            </div>
+                        </div>
+                        <div class="credential-footer">
+                            <button class="btn btn-outline">Check Status</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="view-more-container">
+                    <button class="btn btn-outline view-more-btn">
+                        <span>View All Credentials</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <!-- Verification Requests Section -->
+                <div class="section-title">
+                    <h2>Verification Requests</h2>
+                    <a href="#all-requests" class="view-all-link">View All Requests</a>
+                </div>
+                
+                <div class="requests-container">
+                    <div class="request-card">
+                        <img src="https://logo.clearbit.com/google.com" alt="Google" class="requester-logo">
+                        <div class="request-details">
+                            <h3>Google Inc.</h3>
+                            <p>Requested access to your Azure Developer certification</p>
+                            <div class="request-time">2 hours ago</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-primary">Approve</button>
+                            <button class="btn btn-outline">Deny</button>
+                        </div>
+                    </div>
+                    
+                    <div class="request-card">
+                        <img src="https://logo.clearbit.com/adobe.com" alt="Adobe" class="requester-logo">
+                        <div class="request-details">
+                            <h3>Adobe Systems</h3>
+                            <p>Requested access to your Computer Science degree</p>
+                            <div class="request-time">Yesterday</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-primary">Approve</button>
+                            <button class="btn btn-outline">Deny</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="scripts/cursor.js"></script>
+    <script src="scripts/dashboard.js"></script>
+</body>
+</html>
