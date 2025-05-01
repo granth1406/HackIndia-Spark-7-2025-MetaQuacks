@@ -4,6 +4,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
     const sidebar = document.querySelector('.dashboard-sidebar');
     
+    // Animation activation for dashboard content
+    const dashboardContent = document.querySelector('.dashboard-content');
+    if (dashboardContent) {
+        // Force dashboard content to be visible
+        dashboardContent.style.opacity = '1';
+        
+        // Activate animations for child elements
+        setTimeout(() => {
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('active');
+                }, index * 100);
+            });
+            
+            const credentialCards = document.querySelectorAll('.credential-card');
+            credentialCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('active');
+                }, index * 100);
+            });
+        }, 300);
+    }
+    
+    // Force stats grid and dashboard grid to be visible
+    const statsGrid = document.querySelector('.stats-grid');
+    const dashboardGrid = document.querySelector('.dashboard-grid');
+    const credentialsGrid = document.querySelector('.credentials-grid');
+    
+    if (statsGrid) statsGrid.style.opacity = '1';
+    if (dashboardGrid) dashboardGrid.style.opacity = '1';
+    if (credentialsGrid) credentialsGrid.style.opacity = '1';
+    
+    // Mobile menu toggle (continued)
     if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('active');
