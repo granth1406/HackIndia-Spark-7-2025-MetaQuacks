@@ -1,0 +1,52 @@
+/* Custom cursor styling */
+.cursor-dot, .cursor-dot-outline {
+    pointer-events: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease-in-out, transform 0.3s ease-in-out;
+    z-index: 9999;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color, #5D5FEF);
+}
+
+.cursor-dot-outline {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(93, 95, 239, 0.2);
+}
+
+/* Custom cursor behavior for interactive elements */
+a, button, input[type="submit"], .btn, .feature-card, .testimonial-card, .mobile-menu-btn {
+    cursor: none;
+}
+
+a:hover ~ .cursor-dot, 
+button:hover ~ .cursor-dot, 
+.btn:hover ~ .cursor-dot,
+.feature-card:hover ~ .cursor-dot,
+.testimonial-card:hover ~ .cursor-dot,
+.mobile-menu-btn:hover ~ .cursor-dot {
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+a:hover ~ .cursor-dot-outline, 
+button:hover ~ .cursor-dot-outline, 
+.btn:hover ~ .cursor-dot-outline,
+.feature-card:hover ~ .cursor-dot-outline,
+.testimonial-card:hover ~ .cursor-dot-outline,
+.mobile-menu-btn:hover ~ .cursor-dot-outline {
+    transform: translate(-50%, -50%) scale(1.25);
+}
+
+/* Hide default cursor when custom cursor is active */
+body.custom-cursor-active {
+    cursor: none;
+}
