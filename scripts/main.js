@@ -301,4 +301,73 @@ document.addEventListener('DOMContentLoaded', () => {
             rotateCard();
         });
     }
+
+    // Testimonials Pagination
+    function initTestimonialsPagination() {
+        const testimonialsGrid = document.getElementById('testimonials-grid');
+        const testimonialCards = testimonialsGrid.querySelectorAll('.testimonial-card');
+        const dotsContainer = document.querySelector('.pagination-dots');
+        const prevBtn = document.querySelector('.testimonials-pagination .prev');
+        const nextBtn = document.querySelector('.testimonials-pagination .next');
+        
+        const cardsPerPage = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        const totalPages = Math.ceil(testimonialCards.length / cardsPerPage);
+        let currentPage = 1;
+    
+        // Create pagination dots
+        for (let i = 0; i < totalPages; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('pagination-dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToPage(i + 1));
+            dotsContainer.appendChild(dot);
+        }
+    
+        function updatePagination() {
+            // Update dots
+            const dots = dotsContainer.querySelectorAll('.pagination-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentPage - 1);
+            });
+    
+            // Update buttons
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+    
+            // Show/hide cards
+            testimonialCards.forEach((card, index) => {
+                const startIdx = (currentPage - 1) * cardsPerPage;
+                const endIdx = startIdx + cardsPerPage;
+                card.style.display = (index >= startIdx && index < endIdx) ? 'block' : 'none';
+            });
+        }
+    
+        function goToPage(pageNum) {
+            currentPage = pageNum;
+            updatePagination();
+        }
+    
+        // Event listeners
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) goToPage(currentPage - 1);
+        });
+    
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) goToPage(currentPage + 1);
+        });
+    
+        // Initialize pagination
+        updatePagination();
+    
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const newCardsPerPage = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+            if (newCardsPerPage !== cardsPerPage) {
+                location.reload(); // Reload to recalculate pagination
+            }
+        });
+    }
+    
+    // Initialize testimonials pagination when document is loaded
+    initTestimonialsPagination();
 });

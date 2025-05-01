@@ -816,13 +816,21 @@ header.scrolled {
 
 .testimonials-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-6);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease-in-out;
 }
 
 @media (min-width: 768px) {
   .testimonials-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -935,6 +943,57 @@ header.scrolled {
   opacity: 1;
   background: var(--gradient-primary);
   width: 20px;
+}
+
+.testimonials-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination-btn {
+  background: transparent;
+  border: 2px solid rgba(74, 136, 255, 0.3);
+  color: #4a88ff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background: rgba(74, 136, 255, 0.1);
+  border-color: #4a88ff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(74, 136, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-dot.active {
+  background: #4a88ff;
+  transform: scale(1.2);
 }
 
 /* ---------- CTA SECTION ---------- */
