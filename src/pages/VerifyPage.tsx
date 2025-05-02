@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRScanner from '../components/qr/QRScanner';
+import DocumentVerifier from '../components/verification/DocumentVerifier';
 import { QRCodeData, Credential, CredentialStatus, CredentialType } from '../types';
-import { QrCode, Upload, Shield, ClipboardCheck, XCircle } from 'lucide-react';
+import { QrCode, Upload, Shield, ClipboardCheck, XCircle, Blocks } from 'lucide-react';
+import { VerificationResult } from '../services/BlockchainVerificationService';
 
 enum VerificationStatus {
   INITIAL = 'initial',
@@ -12,11 +14,20 @@ enum VerificationStatus {
   ERROR = 'error',
 }
 
+enum VerificationMethod {
+  NONE = 'none',
+  QR = 'qr',
+  FILE = 'file',
+  BLOCKCHAIN = 'blockchain'
+}
+
 const VerifyPage: React.FC = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<VerificationStatus>(VerificationStatus.INITIAL);
+  const [method, setMethod] = useState<VerificationMethod>(VerificationMethod.NONE);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [verifiedCredential, setVerifiedCredential] = useState<Credential | null>(null);
+  const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const saveCredential = (credential: Credential) => {
@@ -33,6 +44,7 @@ const VerifyPage: React.FC = () => {
   const handleScanClick = () => {
     setShowQRScanner(true);
     setStatus(VerificationStatus.SCANNING);
+    setMethod(VerificationMethod.QR);
   };
 
   const handleQRScanned = (data: QRCodeData) => {
@@ -69,7 +81,9 @@ const VerifyPage: React.FC = () => {
 
   const handleReset = () => {
     setStatus(VerificationStatus.INITIAL);
+    setMethod(VerificationMethod.NONE);
     setVerifiedCredential(null);
+    setVerificationResult(null);
     setErrorMessage('');
   };
 
@@ -83,6 +97,7 @@ const VerifyPage: React.FC = () => {
 
     // Set verifying status while we process the file
     setStatus(VerificationStatus.VERIFYING);
+    setMethod(VerificationMethod.FILE);
 
     // In a real application, you would process the file here
     // For now, we'll simulate the verification process
@@ -107,6 +122,22 @@ const VerifyPage: React.FC = () => {
     }, 2000);
   };
 
+  const handleBlockchainVerification = () => {
+    setMethod(VerificationMethod.BLOCKCHAIN);
+  };
+
+  const handleBlockchainVerificationComplete = (result: {credential: Credential | null, verification: VerificationResult}) => {
+    if (result.credential && result.verification.isValid) {
+      setVerifiedCredential(result.credential);
+      setVerificationResult(result.verification);
+      setStatus(VerificationStatus.SUCCESS);
+      saveCredential(result.credential);
+    } else {
+      setErrorMessage(result.verification.errorMessage || 'Verification failed');
+      setStatus(VerificationStatus.ERROR);
+    }
+  };
+
   const handleViewCredentials = () => {
     navigate('/credentials');
   };
@@ -117,7 +148,7 @@ const VerifyPage: React.FC = () => {
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Verify Credentials</h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Scan a QR code or upload a credential file to verify its authenticity
+            Scan a QR code, upload a credential file, or use blockchain verification to authenticate credentials
           </p>
         </div>
         
@@ -128,7 +159,7 @@ const VerifyPage: React.FC = () => {
                 <Shield className="w-12 h-12 text-neon-blue" />
               </div>
               <h2 className="text-2xl font-semibold mb-6">Choose Verification Method</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-md">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
                 <button
                   onClick={handleScanClick}
                   className="flex flex-col items-center p-6 rounded-lg bg-dark-800 hover:bg-dark-700 border border-dark-600 transition-all duration-300"
@@ -143,14 +174,25 @@ const VerifyPage: React.FC = () => {
                     type="file" 
                     className="hidden" 
                     onChange={handleFileUpload} 
-                    accept="image/*"
+                    accept="image/*,.json,.pdf"
                   />
                 </label>
+                <button
+                  onClick={handleBlockchainVerification}
+                  className="flex flex-col items-center p-6 rounded-lg bg-dark-800 hover:bg-dark-700 border border-dark-600 transition-all duration-300"
+                >
+                  <Blocks className="w-10 h-10 text-neon-pink mb-3" />
+                  <span className="text-white font-medium">Blockchain Verify</span>
+                </button>
               </div>
             </div>
           )}
           
-          {status === VerificationStatus.VERIFYING && (
+          {method === VerificationMethod.BLOCKCHAIN && (
+            <DocumentVerifier onVerificationComplete={handleBlockchainVerificationComplete} />
+          )}
+          
+          {status === VerificationStatus.VERIFYING && method !== VerificationMethod.BLOCKCHAIN && (
             <div className="flex flex-col items-center text-center">
               <div className="w-24 h-24 rounded-full bg-dark-800 flex items-center justify-center mb-6">
                 <div className="w-12 h-12 border-4 border-t-neon-blue border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
@@ -192,6 +234,14 @@ const VerifyPage: React.FC = () => {
                     <span className="text-sm text-gray-400">Status:</span>
                     <span className="text-sm text-white col-span-2">{verifiedCredential.status}</span>
                   </div>
+                  {verificationResult && (
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-sm text-gray-400">Blockchain Verified:</span>
+                      <span className="text-sm text-white col-span-2">
+                        {verificationResult.isValid ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-4">
@@ -237,9 +287,9 @@ const VerifyPage: React.FC = () => {
               <div className="w-12 h-12 flex items-center justify-center rounded-full bg-dark-700 mx-auto mb-4">
                 <span className="text-lg font-bold text-neon-blue">1</span>
               </div>
-              <h4 className="text-lg font-medium mb-2">Scan or Upload</h4>
+              <h4 className="text-lg font-medium mb-2">Multiple Verification Methods</h4>
               <p className="text-sm text-gray-400">
-                Scan a QR code from a credential or upload a credential file
+                Scan a QR code, upload a file, or use blockchain verification to validate credentials
               </p>
             </div>
             <div className="glass-panel p-6">
@@ -248,7 +298,7 @@ const VerifyPage: React.FC = () => {
               </div>
               <h4 className="text-lg font-medium mb-2">Blockchain Verification</h4>
               <p className="text-sm text-gray-400">
-                The system checks the credential against blockchain records
+                Credentials are verified against immutable blockchain records for maximum security
               </p>
             </div>
             <div className="glass-panel p-6">
@@ -270,6 +320,7 @@ const VerifyPage: React.FC = () => {
           onClose={() => {
             setShowQRScanner(false);
             setStatus(VerificationStatus.INITIAL);
+            setMethod(VerificationMethod.NONE);
           }}
         />
       )}
