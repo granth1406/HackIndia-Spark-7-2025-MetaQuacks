@@ -1,7 +1,3 @@
-Thanks for the clarification! Here's the updated README.md for *ProofPass, reflecting that it's a **React-based decentralized web app*, and removing the contributions section:
-
----
-
 # ProofPass
 
 *ProofPass* is a decentralized web application that enables users to *securely store and verify documents* using their *blockchain wallet*. It ensures the authenticity and integrity of documents by leveraging the security of blockchain networks, providing a transparent and tamper-proof verification system.
