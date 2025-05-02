@@ -21,26 +21,24 @@
 ## 📦 Installation
 
 1. *Clone the Repository*:
-
-   ```
-   git clone https://github.com/granth1406/HackIndia-Spark-7-2025-MetaQuacks.git
-   cd HackIndia-Spark-7-2025-MetaQuacks
-   ```
-   
+```
+git clone https://github.com/granth1406/HackIndia-Spark-7-2025-MetaQuacks.git
+cd HackIndia-Spark-7-2025-MetaQuacks
+ ```  
 
 2. *Install Dependencies*:
 
-   ```
-   npm install
-   ```
+```
+npm install
+ ```  
 
 3. *Start Development Server*:
 
-   ```
-   npm run dev
-   ```
+```
+ npm run dev
+ ```  
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:5175](http://localhost:5175) in your browser.
 
 ## 🧠 How It Works
 
@@ -60,6 +58,7 @@ src/
 tailwind.config.js     # Tailwind CSS config
 vite.config.ts         # Vite config
 ```
+
 
 ## 📄 License
 
