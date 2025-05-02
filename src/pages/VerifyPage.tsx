@@ -62,7 +62,27 @@ const VerifyPage: React.FC = () => {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     // This would handle QR code image uploads in a real app
-    alert('File upload functionality would be implemented in a production app');
+    if (e.target.files && e.target.files[0]) {
+      alert('File uploaded successfully!');
+      setStatus(VerificationStatus.VERIFYING);
+      // Simulate verification process
+      setTimeout(() => {
+        setStatus(VerificationStatus.SUCCESS);
+        setVerifiedCredential({
+          id: '123',
+          name: 'Sample Credential',
+          issuer: 'Sample Issuer',
+          issuedAt: new Date().toISOString(),
+          expiresAt: new Date(2026, 0, 1).toISOString(),
+          type: CredentialType.CERTIFICATION,
+          status: CredentialStatus.ACTIVE,
+          metadata: {
+            description: 'Sample credential description'
+          },
+          proofUrl: 'https://example.com/proof/123'
+        });
+      }, 2000);
+    }
   };
 
   return (
