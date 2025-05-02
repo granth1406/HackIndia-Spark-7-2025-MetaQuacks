@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ThreeScene from '../components/three/ThreeScene';
 import CredentialCard from '../components/credentials/CredentialCard';
 import { Credential, CredentialStatus, CredentialType } from '../types';
-import { Layers, QrCode, Upload, PlusCircle } from 'lucide-react';
+import { Layers, QrCode, PlusCircle, X, Check } from 'lucide-react';
 import QRScanner from '../components/qr/QRScanner';
 import { useWeb3 } from '../contexts/Web3Context';
 
@@ -88,7 +88,28 @@ const DashboardPage: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>(sampleCredentials);
   const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newCredential, setNewCredential] = useState<Partial<Credential>>({
+    name: '',
+    issuer: '',
+    type: CredentialType.CERTIFICATION,
+    issuedAt: new Date().toISOString().split('T')[0],
+    status: CredentialStatus.ACTIVE
+  });
   const { isConnected, connect } = useWeb3();
+
+  // Load any stored credentials from localStorage on component mount
+  useEffect(() => {
+    const storedCredentials = localStorage.getItem('credentials');
+    if (storedCredentials) {
+      try {
+        const parsedCredentials = JSON.parse(storedCredentials);
+        setCredentials([...sampleCredentials, ...parsedCredentials]);
+      } catch (error) {
+        console.error('Error parsing stored credentials:', error);
+      }
+    }
+  }, []);
 
   const handleCredentialSelect = (credential: Credential) => {
     setSelectedCredential(credential);
@@ -100,8 +121,8 @@ const DashboardPage: React.FC = () => {
       return;
     }
     
-    // This would open a modal for adding credentials in a real app
-    console.log('Add credential');
+    // Open the modal for adding a new credential
+    setShowAddModal(true);
   };
 
   const handleScanQR = () => {
@@ -115,6 +136,52 @@ const DashboardPage: React.FC = () => {
     // In a real app, we would verify the QR data and add the credential
     // For demonstration, we'll show an alert
     alert(`QR code scanned for credential ID: ${data.credentialId}`);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewCredential(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCredentialSubmit = () => {
+    // Generate a new credential object
+    const credential: Credential = {
+      id: `cred-${Date.now()}`,
+      name: newCredential.name || 'Unnamed Credential',
+      issuer: newCredential.issuer || 'Unknown Issuer',
+      issuedAt: newCredential.issuedAt || new Date().toISOString(),
+      expiresAt: newCredential.expiresAt || null,
+      type: newCredential.type || CredentialType.CERTIFICATION,
+      status: newCredential.status || CredentialStatus.ACTIVE,
+      metadata: {
+        description: newCredential.metadata?.description || 'No description provided'
+      },
+      proofUrl: newCredential.proofUrl || 'https://example.com/proof/new'
+    };
+
+    // Add to credentials list
+    const updatedCredentials = [...credentials, credential];
+    setCredentials(updatedCredentials);
+
+    // Store in localStorage
+    try {
+      // Get existing stored credentials
+      const storedCredentials = JSON.parse(localStorage.getItem('credentials') || '[]');
+      const updatedStoredCredentials = [...storedCredentials, credential];
+      localStorage.setItem('credentials', JSON.stringify(updatedStoredCredentials));
+    } catch (error) {
+      console.error('Error saving credential to localStorage:', error);
+    }
+
+    // Reset form and close modal
+    setNewCredential({
+      name: '',
+      issuer: '',
+      type: CredentialType.CERTIFICATION,
+      issuedAt: new Date().toISOString().split('T')[0],
+      status: CredentialStatus.ACTIVE
+    });
+    setShowAddModal(false);
   };
 
   return (
@@ -194,6 +261,161 @@ const DashboardPage: React.FC = () => {
           onScan={handleQRScanned} 
           onClose={() => setShowQRScanner(false)} 
         />
+      )}
+
+      {/* Add Credential Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-dark-900/90 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-2xl bg-dark-800 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-4 border-b border-dark-700 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-white">Add New Credential</h3>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Credential Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Credential Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={newCredential.name || ''}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                      placeholder="e.g. Microsoft Certification"
+                    />
+                  </div>
+                  
+                  {/* Issuer */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Issuer</label>
+                    <input
+                      type="text"
+                      name="issuer"
+                      value={newCredential.issuer || ''}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                      placeholder="e.g. Microsoft"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Type */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
+                    <select
+                      name="type"
+                      value={newCredential.type}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                    >
+                      {Object.values(CredentialType).map(type => (
+                        <option key={type} value={type}>
+                          {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {/* Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
+                    <select
+                      name="status"
+                      value={newCredential.status}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                    >
+                      {Object.values(CredentialStatus).map(status => (
+                        <option key={status} value={status}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Issue Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Issue Date</label>
+                    <input
+                      type="date"
+                      name="issuedAt"
+                      value={newCredential.issuedAt?.toString().split('T')[0] || ''}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                    />
+                  </div>
+                  
+                  {/* Expiry Date (Optional) */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Expiry Date (Optional)</label>
+                    <input
+                      type="date"
+                      name="expiresAt"
+                      value={newCredential.expiresAt?.toString().split('T')[0] || ''}
+                      onChange={handleInputChange}
+                      className="input w-full"
+                    />
+                  </div>
+                </div>
+                
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+                  <textarea
+                    name="metadata.description"
+                    value={newCredential.metadata?.description || ''}
+                    onChange={(e) => setNewCredential(prev => ({ 
+                      ...prev, 
+                      metadata: { ...prev.metadata, description: e.target.value } 
+                    }))}
+                    className="input w-full h-24"
+                    placeholder="Add a description of this credential"
+                  ></textarea>
+                </div>
+                
+                {/* Proof URL */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Proof URL (Optional)</label>
+                  <input
+                    type="text"
+                    name="proofUrl"
+                    value={newCredential.proofUrl || ''}
+                    onChange={handleInputChange}
+                    className="input w-full"
+                    placeholder="https://example.com/proof/123"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 border-t border-dark-700 flex justify-end">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="btn btn-ghost mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCredentialSubmit}
+                className="btn btn-primary"
+              >
+                <Check className="w-4 h-4 mr-2" />
+                Add Credential
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
