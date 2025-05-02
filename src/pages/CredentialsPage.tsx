@@ -3,6 +3,7 @@ import { Plus, Filter, Search, ArrowUpDown } from 'lucide-react';
 import CredentialCard from '../components/credentials/CredentialCard';
 import { Credential, CredentialStatus, CredentialType } from '../types';
 import { useWeb3 } from '../contexts/Web3Context';
+import { blockchainVerificationService } from '../services/BlockchainVerificationService';
 
 const CredentialsPage: React.FC = () => {
   const [credentials, setCredentials] = useState<Credential[]>([]);
@@ -11,11 +12,29 @@ const CredentialsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<CredentialStatus | 'all'>('all');
   const { isConnected, connect } = useWeb3();
 
+  // Add a second useEffect to force refresh when localStorage changes
   useEffect(() => {
-    // Load credentials from localStorage when component mounts
-    const savedCredentials = JSON.parse(localStorage.getItem('credentials') || '[]');
-    setCredentials(savedCredentials);
-  }, []); // Empty dependency array means this runs once when component mounts
+    const loadCredentials = () => {
+      try {
+        const savedCredentials = JSON.parse(localStorage.getItem('credentials') || '[]');
+        setCredentials(savedCredentials);
+      } catch (error) {
+        console.error('Error loading credentials from localStorage:', error);
+        setCredentials([]);
+      }
+    };
+
+    // Load credentials initially
+    loadCredentials();
+
+    // Set up event listener for storage changes
+    window.addEventListener('storage', loadCredentials);
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('storage', loadCredentials);
+    };
+  }, []);
 
   const handleAddCredential = async () => {
     if (!isConnected) {
@@ -23,6 +42,28 @@ const CredentialsPage: React.FC = () => {
       return;
     }
     // Implementation for adding new credentials
+  };
+  
+  const handleDeleteCredential = (credentialId: string) => {
+    console.log('Deleting credential with ID:', credentialId);
+    
+    // Filter out the credential with the matching ID
+    const updatedCredentials = credentials.filter(cred => cred.id !== credentialId);
+    
+    // Update state
+    setCredentials(updatedCredentials);
+    
+    try {
+      // Update localStorage
+      localStorage.setItem('credentials', JSON.stringify(updatedCredentials));
+      
+      // Dispatch a storage event to update other tabs
+      window.dispatchEvent(new Event('storage'));
+      
+      console.log('Credential deleted successfully');
+    } catch (error) {
+      console.error('Error saving updated credentials to localStorage:', error);
+    }
   };
 
   const filteredCredentials = credentials.filter(credential => {
@@ -106,12 +147,19 @@ const CredentialsPage: React.FC = () => {
             <CredentialCard
               key={credential.id}
               credential={credential}
+              onDelete={handleDeleteCredential}
             />
           ))}
           
           {filteredCredentials.length === 0 && (
             <div className="col-span-full text-center py-12">
               <p className="text-gray-400">No credentials found matching your filters.</p>
+              {credentials.length > 0 && (
+                <p className="text-gray-500 mt-2">Try adjusting your search criteria.</p>
+              )}
+              {credentials.length === 0 && (
+                <p className="text-gray-500 mt-2">You don't have any credentials yet. Add one to get started.</p>
+              )}
             </div>
           )}
         </div>

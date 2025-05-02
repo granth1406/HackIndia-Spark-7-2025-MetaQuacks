@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Credential, CredentialStatus, CredentialType } from '../../types';
-import { Calendar, Clock, Shield, Award, Briefcase, GraduationCap, UserCheck, Key, Medal, Download, MoreVertical, X } from 'lucide-react';
+import { Calendar, Clock, Shield, Award, Briefcase, GraduationCap, UserCheck, Key, Medal, Download, MoreVertical, X, Trash2, AlertTriangle } from 'lucide-react';
 
 interface CredentialCardProps {
   credential: Credential;
   onClick?: () => void;
+  onDelete?: (credentialId: string) => void;
 }
 
-const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick }) => {
+const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick, onDelete }) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filename, setFilename] = useState(`${credential.name.replace(/\s+/g, '-').toLowerCase()}`);
   const [fileFormat, setFileFormat] = useState<'json' | 'pdf' | 'png'>('json');
   const [showActions, setShowActions] = useState(false);
@@ -63,6 +65,13 @@ const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick }) 
   const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering parent onClick
     setShowSaveModal(true);
+    setShowActions(false);
+  };
+  
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering parent onClick
+    setShowDeleteModal(true);
+    setShowActions(false);
   };
   
   const handleMoreClick = (e: React.MouseEvent) => {
@@ -126,6 +135,13 @@ const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick }) 
     setShowSaveModal(false);
     setFilename(`${credential.name.replace(/\s+/g, '-').toLowerCase()}`);
   };
+  
+  const deleteCredential = () => {
+    if (onDelete) {
+      onDelete(credential.id);
+    }
+    setShowDeleteModal(false);
+  };
 
   return (
     <>
@@ -165,6 +181,13 @@ const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick }) 
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Save As...
+                </button>
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-left text-error-500 hover:bg-dark-700"
+                  onClick={handleDeleteClick}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
                 </button>
               </div>
             </div>
@@ -282,6 +305,63 @@ const CredentialCard: React.FC<CredentialCardProps> = ({ credential, onClick }) 
               >
                 <Download className="w-4 h-4 mr-2" />
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-dark-900/90 backdrop-blur-sm p-4"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDeleteModal(false);
+          }}
+        >
+          <div 
+            className="relative w-full max-w-md bg-dark-800 rounded-lg shadow-xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-dark-700 flex justify-between items-center">
+              <h3 className="text-lg font-medium text-white flex items-center">
+                <AlertTriangle className="h-5 w-5 text-error-500 mr-2" />
+                Delete Credential
+              </h3>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-300 mb-2">
+                Are you sure you want to delete this credential?
+              </p>
+              <p className="text-gray-400 text-sm">
+                <strong>{credential.name}</strong> issued by <strong>{credential.issuer}</strong>
+              </p>
+              <p className="text-error-500 text-sm mt-4">
+                This action cannot be undone.
+              </p>
+            </div>
+            
+            <div className="p-4 border-t border-dark-700 flex justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="btn btn-ghost mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteCredential}
+                className="btn btn-error"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
               </button>
             </div>
           </div>
