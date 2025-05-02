@@ -63,4 +63,4 @@ vite.config.ts         # Vite config
 
 ## 📄 License
 
-This project is for educational/hackathon purposes and does not currently use a formal open-source license.
+This project is for hackathon purposes and does not currently use a formal open-source license.
