@@ -1,37 +1,44 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Web3Provider } from './contexts/Web3Context';
-import Navbar from './components/layout/Navbar';
+import { WagmiConfig } from 'wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
+
+import { wagmiConfig, chains } from './lib/wagmi';
+import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import VerifyPage from './pages/VerifyPage';
-import AboutPage from './pages/AboutPage';
-import CredentialsPage from './pages/CredentialsPage';
+import IssuePage from './pages/IssuePage';
+import ProfilePage from './pages/ProfilePage';
+import BackgroundScene from './components/three/BackgroundScene';
+import { Web3StorageProvider } from './contexts/Web3StorageContext';
 
 function App() {
   return (
-    <Web3Provider>
-      <Router>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/credentials" element={<CredentialsPage />} />
-              <Route path="/verify" element={<VerifyPage />} />
-              <Route path="/about" element={<AboutPage />} />
-            </Routes>
-          </main>
-          <Footer />
-          
-          {/* Screen and Grain overlays for cyberpunk effect */}
-          <div className="screen-overlay"></div>
-          <div className="grain-overlay"></div>
-        </div>
-      </Router>
-    </Web3Provider>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider chains={chains}>
+        <Web3StorageProvider>
+          <Router>
+            <div className="flex flex-col min-h-screen">
+              <BackgroundScene />
+              <Header />
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/verify" element={<VerifyPage />} />
+                  <Route path="/issue" element={<IssuePage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </Router>
+        </Web3StorageProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
   );
 }
 
