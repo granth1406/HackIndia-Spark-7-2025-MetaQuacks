@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import QRScanner from '../components/qr/QRScanner';
 import { QRCodeData, Credential, CredentialStatus, CredentialType } from '../types';
 import { QrCode, Upload, Shield, ClipboardCheck, XCircle } from 'lucide-react';
@@ -12,10 +13,22 @@ enum VerificationStatus {
 }
 
 const VerifyPage: React.FC = () => {
+  const navigate = useNavigate();
   const [status, setStatus] = useState<VerificationStatus>(VerificationStatus.INITIAL);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [verifiedCredential, setVerifiedCredential] = useState<Credential | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const saveCredential = (credential: Credential) => {
+    // Get existing credentials from localStorage
+    const existingCredentials = JSON.parse(localStorage.getItem('credentials') || '[]');
+    
+    // Add new credential
+    const updatedCredentials = [...existingCredentials, credential];
+    
+    // Save back to localStorage
+    localStorage.setItem('credentials', JSON.stringify(updatedCredentials));
+  };
 
   const handleScanClick = () => {
     setShowQRScanner(true);
@@ -28,7 +41,6 @@ const VerifyPage: React.FC = () => {
     
     // Simulate verification process
     setTimeout(() => {
-      // This would perform actual verification in a real application
       if (data.credentialId) {
         // Mock successful verification
         const mockCredential: Credential = {
@@ -47,6 +59,7 @@ const VerifyPage: React.FC = () => {
         
         setVerifiedCredential(mockCredential);
         setStatus(VerificationStatus.SUCCESS);
+        saveCredential(mockCredential); // Save the verified credential
       } else {
         setErrorMessage('Invalid credential data');
         setStatus(VerificationStatus.ERROR);
@@ -61,8 +74,41 @@ const VerifyPage: React.FC = () => {
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // This would handle QR code image uploads in a real app
-    alert('File upload functionality would be implemented in a production app');
+    const file = e.target.files?.[0];
+    if (!file) {
+      setErrorMessage('No file selected');
+      setStatus(VerificationStatus.ERROR);
+      return;
+    }
+
+    // Set verifying status while we process the file
+    setStatus(VerificationStatus.VERIFYING);
+
+    // In a real application, you would process the file here
+    // For now, we'll simulate the verification process
+    setTimeout(() => {
+      const mockCredential: Credential = {
+        id: 'FILE-' + Math.random().toString(36).substr(2, 9),
+        name: 'File Verified Credential',
+        issuer: 'ProofPass Authority',
+        issuedAt: new Date().toISOString(),
+        expiresAt: null,
+        type: CredentialType.CERTIFICATION,
+        status: CredentialStatus.ACTIVE,
+        metadata: {
+          description: 'This credential has been verified successfully from file',
+        },
+        proofUrl: 'https://example.com/proof/123',
+      };
+      
+      setVerifiedCredential(mockCredential);
+      setStatus(VerificationStatus.SUCCESS);
+      saveCredential(mockCredential); // Save the verified credential
+    }, 2000);
+  };
+
+  const handleViewCredentials = () => {
+    navigate('/credentials');
   };
 
   return (
@@ -148,12 +194,20 @@ const VerifyPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <button
-                onClick={handleReset}
-                className="btn btn-primary"
-              >
-                Verify Another
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleReset}
+                  className="btn btn-primary"
+                >
+                  Verify Another
+                </button>
+                <button
+                  onClick={handleViewCredentials}
+                  className="btn btn-secondary"
+                >
+                  View All Credentials
+                </button>
+              </div>
             </div>
           )}
           

@@ -1,50 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Filter, Search, ArrowUpDown } from 'lucide-react';
 import CredentialCard from '../components/credentials/CredentialCard';
 import { Credential, CredentialStatus, CredentialType } from '../types';
 import { useWeb3 } from '../contexts/Web3Context';
 
-// Sample data
-const sampleCredentials: Credential[] = [
-  {
-    id: '1',
-    name: 'University Degree',
-    issuer: 'Stanford University',
-    issuedAt: '2023-05-15',
-    expiresAt: null,
-    type: CredentialType.EDUCATION,
-    status: CredentialStatus.ACTIVE,
-    metadata: {
-      description: 'Bachelor of Science in Computer Science',
-      degree: 'BSc',
-      gpa: '3.8',
-    },
-    proofUrl: 'https://example.com/proof/123',
-  },
-  {
-    id: '2',
-    name: 'Software Engineer',
-    issuer: 'Tech Corp Inc.',
-    issuedAt: '2023-01-10',
-    expiresAt: '2025-01-10',
-    type: CredentialType.EMPLOYMENT,
-    status: CredentialStatus.ACTIVE,
-    metadata: {
-      description: 'Senior Software Engineer position verification',
-      position: 'Senior Software Engineer',
-      department: 'Engineering',
-    },
-    proofUrl: 'https://example.com/proof/456',
-  },
-  // Add more sample credentials as needed
-];
-
 const CredentialsPage: React.FC = () => {
-  const [credentials] = useState<Credential[]>(sampleCredentials);
+  const [credentials, setCredentials] = useState<Credential[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<CredentialType | 'all'>('all');
   const [selectedStatus, setSelectedStatus] = useState<CredentialStatus | 'all'>('all');
   const { isConnected, connect } = useWeb3();
+
+  useEffect(() => {
+    // Load credentials from localStorage when component mounts
+    const savedCredentials = JSON.parse(localStorage.getItem('credentials') || '[]');
+    setCredentials(savedCredentials);
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const handleAddCredential = async () => {
     if (!isConnected) {
