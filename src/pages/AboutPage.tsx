@@ -77,16 +77,24 @@ const AboutPage: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold mb-8 text-center">Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((member) => (
-              <div key={member} className="glass-panel p-6 text-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-1">Team Member {member}</h3>
-                <p className="text-gray-400 text-sm mb-3">Position</p>
-                <p className="text-gray-300 text-sm">
-                  Expert in blockchain technology and credential systems
-                </p>
-              </div>
-            ))}
+            <div className="glass-panel p-6 text-center">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-1">Granth</h3>
+              <p className="text-gray-400 text-sm mb-3">Blockchain Developer</p>
+              
+            </div>
+            <div className="glass-panel p-6 text-center">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-1">Vanshika</h3>
+              <p className="text-gray-400 text-sm mb-3">Frontend Developer</p>
+              
+            </div>
+            <div className="glass-panel p-6 text-center">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-r from-neon-blue to-neon-purple mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-1">Pratham</h3>
+              <p className="text-gray-400 text-sm mb-3">Backend Developer</p>
+              
+            </div>
           </div>
         </div>
       </div>
