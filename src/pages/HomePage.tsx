@@ -21,11 +21,10 @@ const HomePage: React.FC = () => {
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 bg-gradient-to-r from-primary-400 to-accent-400 text-transparent bg-clip-text">
-              Decentralized Credential Verification in 3D
+              Decentralized Credential Verification 
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-8">
-              ProofPass transforms your credentials into interactive 3D holograms, 
-              secured by blockchain technology and verifiable anywhere.
+              ProofPass – Turning Trust into Code, and Credentials into Proof.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/dashboard" className="btn btn-primary text-lg px-8 py-3">
