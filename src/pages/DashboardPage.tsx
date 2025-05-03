@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
-import { FileText, Edit, Trash2, Filter, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import CredentialsScene from '../components/three/CredentialsScene';
-import CredentialDetails from '../components/credential/CredentialDetails';
+import ThreeScene from '../components/three/ThreeScene';
+import CredentialCard from '../components/credentials/CredentialCard';
+import { Credential, CredentialStatus, CredentialType } from '../types';
+import { Layers, QrCode, Upload, PlusCircle } from 'lucide-react';
+import QRScanner from '../components/qr/QRScanner';
+import { useWeb3 } from '../contexts/Web3Context';
 
 // Sample credential data
 const SAMPLE_CREDENTIALS = [
@@ -56,83 +57,114 @@ const SAMPLE_CREDENTIALS = [
   }
 ];
 
+// Sample documents for demonstration
+const sampleDocuments: Credential[] = [
+  {
+    id: 'doc-1',
+    name: 'Passport',
+    issuer: 'Department of State',
+    issuedAt: '2021-03-15',
+    expiresAt: '2031-03-15',
+    type: CredentialType.IDENTITY,
+    status: CredentialStatus.ACTIVE,
+    metadata: {
+      description: 'Official passport document',
+      documentType: 'International travel document',
+      documentNumber: 'X1234567',
+    },
+    proofUrl: 'https://example.com/proof/passport',
+  },
+  {
+    id: 'doc-2',
+    name: 'Property Deed',
+    issuer: 'County Recorder\'s Office',
+    issuedAt: '2024-01-10',
+    expiresAt: null,
+    type: CredentialType.IDENTITY,
+    status: CredentialStatus.ACTIVE,
+    metadata: {
+      description: 'Official property ownership record',
+      propertyAddress: '123 Main St, Anytown, USA',
+      recordNumber: 'R2023-56789',
+    },
+    proofUrl: 'https://example.com/proof/deed',
+  },
+  {
+    id: 'doc-3',
+    name: 'Birth Certificate',
+    issuer: 'Department of Health',
+    issuedAt: '1985-06-23',
+    expiresAt: null,
+    type: CredentialType.IDENTITY,
+    status: CredentialStatus.ACTIVE,
+    metadata: {
+      description: 'Official birth record',
+      certificateNumber: 'BC-98765432',
+    },
+    proofUrl: 'https://example.com/proof/birth',
+  },
+];
+
 const DashboardPage: React.FC = () => {
-  const { isConnected } = useAccount();
-  const [viewMode, setViewMode] = useState<'3d' | 'list'>('3d');
-  const [selectedCredential, setSelectedCredential] = useState<typeof SAMPLE_CREDENTIALS[0] | null>(null);
-  const [filterType, setFilterType] = useState<string | null>(null);
+  const [credentials, setCredentials] = useState<Credential[]>(sampleCredentials);
+  const [selectedCredential, setSelectedCredential] = useState<Credential | null>(null);
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const { isConnected, connect } = useWeb3();
 
-  const filteredCredentials = filterType 
-    ? SAMPLE_CREDENTIALS.filter(cred => cred.type === filterType)
-    : SAMPLE_CREDENTIALS;
-
-  // Prepare credentials for 3D view
-  const credentialsFor3D = filteredCredentials.map(cred => ({
-    id: cred.id,
-    title: cred.title,
-    issuer: cred.issuer,
-    color: cred.color
-  }));
-
-  const handleCredentialSelect = (credential: { id: string }) => {
-    const fullCredential = SAMPLE_CREDENTIALS.find(c => c.id === credential.id);
-    if (fullCredential) {
-      setSelectedCredential(fullCredential);
-    }
+  const handleCredentialSelect = (credential: Credential) => {
+    setSelectedCredential(credential);
   };
 
-  if (!isConnected) {
-    return (
-      <div className="page-container flex items-center justify-center min-h-[70vh]">
-        <div className="glass-panel p-8 text-center max-w-md">
-          <FileText size={48} className="text-primary-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-display font-bold mb-4">Connect Your Wallet</h2>
-          <p className="text-gray-300 mb-6">
-            You need to connect your wallet to view and manage your credentials.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const handleAddCredential = async () => {
+    if (!isConnected) {
+      await connect();
+      return;
+    }
+    
+    // This would open a modal for adding credentials in a real app
+    console.log('Add credential');
+  };
+
+  const handleScanQR = () => {
+    setShowQRScanner(true);
+  };
+
+  const handleQRScanned = (data: any) => {
+    console.log('QR Scanned:', data);
+    setShowQRScanner(false);
+    
+    // In a real app, we would verify the QR data and add the credential
+    // For demonstration, we'll show an alert
+    alert(`QR code scanned for credential ID: ${data.credentialId}`);
+  };
 
   return (
-    <div className="page-container">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <div>
-          <h1 className="section-title mb-2">My Credentials</h1>
-          <p className="text-gray-300">
-            View and manage your verified credentials.
+    <div className="min-h-screen pt-20 pb-12">
+      <div className="container mx-auto px-4">
+        {/* Dashboard Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Credential Dashboard</h1>
+          <p className="text-gray-400">
+            View, manage, and verify your digital credentials
           </p>
         </div>
         
-        <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
-          <Link to="/issue" className="btn btn-primary">
-            <Plus size={18} className="mr-2" />
-            Issue New
-          </Link>
-          
-          <div className="flex">
-            <button 
-              onClick={() => setViewMode('3d')} 
-              className={`px-4 py-2 rounded-l-xl transition-colors ${
-                viewMode === '3d' 
-                  ? 'bg-primary-600 text-white' 
-                  : 'bg-dark-card text-gray-300 hover:bg-dark-border'
-              }`}
-            >
-              3D View
-            </button>
-            <button 
-              onClick={() => setViewMode('list')} 
-              className={`px-4 py-2 rounded-r-xl transition-colors ${
-                viewMode === 'list' 
-                  ? 'bg-primary-600 text-white' 
-                  : 'bg-dark-card text-gray-300 hover:bg-dark-border'
-              }`}
-            >
-              List View
-            </button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 mb-8">
+          <button 
+            onClick={handleAddCredential}
+            className="btn btn-primary"
+          >
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Add Credential
+          </button>
+          <button 
+            onClick={handleScanQR}
+            className="btn btn-secondary"
+          >
+            <QrCode className="w-4 h-4 mr-2" />
+            Scan QR Code
+          </button>
         </div>
       </div>
       
@@ -186,12 +218,10 @@ const DashboardPage: React.FC = () => {
               </button>
             </div>
           </div>
-          
-          {/* Credentials Display */}
-          {viewMode === '3d' ? (
-            <CredentialsScene 
-              credentials={credentialsFor3D} 
-              onSelectCredential={handleCredentialSelect}
+          <div className="glass-panel p-2">
+            <ThreeScene 
+              credentials={credentials} 
+              onSelectCredential={handleCredentialSelect} 
             />
           ) : (
             <div className="glass-panel p-6">
@@ -261,11 +291,39 @@ const DashboardPage: React.FC = () => {
         
         {/* Credential Details */}
         {selectedCredential && (
-          <div className="w-full lg:w-1/3 lg:sticky lg:top-24 self-start">
-            <CredentialDetails credential={selectedCredential} />
+          <div className="mb-12">
+            <h2 className="text-xl font-semibold mb-4">Selected Credential</h2>
+            <div className="max-w-2xl">
+              <CredentialCard credential={selectedCredential} />
+            </div>
           </div>
         )}
+        
+        {/* Credential List */}
+        <div>
+          <div className="flex items-center mb-4">
+            <Layers className="w-5 h-5 text-primary-400 mr-2" />
+            <h2 className="text-xl font-semibold">My Credentials</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {credentials.map((credential) => (
+              <CredentialCard 
+                key={credential.id} 
+                credential={credential} 
+                onClick={() => handleCredentialSelect(credential)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
+      
+      {/* QR Scanner Modal */}
+      {showQRScanner && (
+        <QRScanner 
+          onScan={handleQRScanned} 
+          onClose={() => setShowQRScanner(false)} 
+        />
+      )}
     </div>
   );
 };
