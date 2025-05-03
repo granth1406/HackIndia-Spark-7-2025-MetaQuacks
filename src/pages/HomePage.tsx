@@ -1,207 +1,173 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shield, Lock, Database, Scan, CheckCircle } from 'lucide-react';
-import { useWeb3 } from '../contexts/Web3Context';
+import { Link } from 'react-router-dom';
+import { ChevronRight, FileCheck, QrCode, Shield, Lock, Globe, Server, Layers } from 'lucide-react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import CredentialsScene from '../components/three/CredentialsScene';
+
+const DEMO_CREDENTIALS = [
+  { id: '1', title: 'University Degree', issuer: 'MIT University', color: '#4f46e5' },
+  { id: '2', title: 'Professional Certificate', issuer: 'Google', color: '#0891b2' },
+  { id: '3', title: 'Event Pass', issuer: 'ETH Global', color: '#a855f7' },
+  { id: '4', title: 'Contributor Badge', issuer: 'GitHub', color: '#10b981' },
+];
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
-  const { connect, isConnected } = useWeb3();
-  
-  const handleGetStarted = async () => {
-    if (!isConnected) {
-      await connect();
-    }
-    navigate('/dashboard');
-  };
+  const [selectedCredential, setSelectedCredential] = useState<typeof DEMO_CREDENTIALS[0] | null>(null);
 
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 md:pt-32 md:pb-24">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-gradient-radial from-neon-blue/20 to-transparent"></div>
-          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-neon-purple/10 to-transparent"></div>
-        </div>
-        
-        <div className="screen-overlay"></div>
-        <div className="grain-overlay"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-dark-800/80 backdrop-blur-sm border border-dark-700 mb-6">
-              <span className="h-2 w-2 rounded-full bg-success-500 mr-2"></span>
-              <span className="text-sm font-medium text-gray-300">Decentralized Credential Verification</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-              <span className="bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent">
-                ProofPass
-              </span>
+      <section className="py-16 md:py-32 relative overflow-hidden">
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 bg-gradient-to-r from-primary-400 to-accent-400 text-transparent bg-clip-text">
+              Decentralized Credential Verification 
             </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto">
-              Transform credential verification with 3D holographic cards secured on the blockchain
+            <p className="text-lg md:text-xl text-gray-300 mb-8">
+              ProofPass – Turning Trust into Code, and Credentials into Proof.
             </p>
-            
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button 
-                onClick={handleGetStarted} 
-                className="btn bg-gradient-to-r from-neon-blue to-neon-purple text-dark-900 font-medium hover:shadow-neon transition-all duration-300"
-              >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/dashboard" className="btn btn-primary text-lg px-8 py-3">
                 Get Started
-              </button>
-              <button 
-                onClick={() => navigate('/about')} 
-                className="btn btn-ghost"
-              >
-                Learn More
-              </button>
+              </Link>
+              <ConnectButton accountStatus="address" chainStatus="none" showBalance={false} />
             </div>
+          </div>
+          
+          <div className="mt-16 relative">
+            <CredentialsScene 
+              credentials={DEMO_CREDENTIALS}
+              onSelectCredential={setSelectedCredential}
+            />
+            
+            {selectedCredential && (
+              <div className="absolute bottom-4 left-0 right-0 mx-auto max-w-md bg-dark-surface/90 backdrop-blur-sm p-4 rounded-xl border border-dark-border">
+                <h3 className="text-lg font-semibold">{selectedCredential.title}</h3>
+                <p className="text-gray-300">Issued by: {selectedCredential.issuer}</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
       
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-dark-800/50">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-dark-surface">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Revolutionizing Verification
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              ProofPass combines cutting-edge blockchain technology with immersive 3D visualization to create a secure, portable credential system.
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Core Features</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
+              ProofPass combines cutting-edge technology to create a secure, 
+              decentralized credential verification system with stunning visualizations.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Feature 1 */}
-            <div className="card hover:border-neon-blue/30 hover:shadow-neon transition-all duration-300">
-              <Shield className="w-12 h-12 text-neon-blue mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Holographic Credentials</h3>
-              <p className="text-gray-400">
-                Visualize your verified credentials as interactive 3D holographic cards
-              </p>
-            </div>
-            
-            {/* Feature 2 */}
-            <div className="card hover:border-neon-purple/30 hover:shadow-neon transition-all duration-300">
-              <Lock className="w-12 h-12 text-neon-purple mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Verifiable Proofs</h3>
-              <p className="text-gray-400">
-                Connect to real-world sources via Reclaim Protocol to generate cryptographic proofs
-              </p>
-            </div>
-            
-            {/* Feature 3 */}
-            <div className="card hover:border-neon-pink/30 hover:shadow-neon transition-all duration-300">
-              <Database className="w-12 h-12 text-neon-pink mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Web3 Integration</h3>
-              <p className="text-gray-400">
-                Connect MetaMask or any Ethereum-compatible wallet for seamless blockchain interaction
-              </p>
-            </div>
-            
-            {/* Feature 4 */}
-            <div className="card hover:border-accent-500/30 hover:shadow-neon transition-all duration-300">
-              <Scan className="w-12 h-12 text-accent-500 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">QR Verification</h3>
-              <p className="text-gray-400">
-                Scan or generate QR codes for instant credential verification
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Shield className="w-10 h-10 text-primary-500" />,
+                title: '3D Credential Holograms',
+                description: 'Visualize your verified credentials as stunning 3D holographic cards that can be rotated and viewed from any angle.'
+              },
+              {
+                icon: <Lock className="w-10 h-10 text-secondary-500" />,
+                title: 'Blockchain Security',
+                description: 'All credentials are secured using blockchain technology, making them tamper-proof and permanently verifiable.'
+              },
+              {
+                icon: <QrCode className="w-10 h-10 text-accent-500" />,
+                title: 'QR Verification',
+                description: 'Scan a QR code to instantly verify credentials, perfect for events, hiring, or identity validation.'
+              },
+              {
+                icon: <Server className="w-10 h-10 text-success-500" />,
+                title: 'Decentralized Storage',
+                description: 'Credential documents are stored on IPFS, ensuring they remain accessible and cannot be altered.'
+              },
+              {
+                icon: <Globe className="w-10 h-10 text-warning-500" />,
+                title: 'Reclaim Protocol Integration',
+                description: 'Connect to real-world sources to fetch and verify claims without compromising privacy.'
+              },
+              {
+                icon: <Layers className="w-10 h-10 text-error-500" />,
+                title: 'Multi-Chain Support',
+                description: 'ProofPass works across multiple blockchain networks, giving you flexibility and future-proofing.'
+              }
+            ].map((feature, index) => (
+              <div key={index} className="glass-panel p-6 group">
+                <div className="card-highlight"></div>
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-300">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
       
       {/* Use Cases Section */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
+      <section className="py-16">
+        <div className="container mx-auto px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Use Cases
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              ProofPass transforms verification across multiple industries and use cases.
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">Use Cases</h2>
+            <p className="text-gray-300 max-w-2xl mx-auto">
+              ProofPass can revolutionize how credentials are verified across multiple industries and contexts.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Use Case 1 */}
-            <div className="glass-panel p-6 hover:border-neon-blue/30 hover:shadow-neon transition-all duration-300">
-              <h3 className="text-xl font-semibold mb-4">Hiring & Resume Verification</h3>
-              <p className="text-gray-400 mb-4">
-                Enable instant verification of employment history, education credentials, and certifications for employers and candidates.
-              </p>
-              <div className="flex items-center text-sm text-neon-blue">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                <span>Eliminate credential fraud</span>
+            {[
+              {
+                title: 'Education & Academia',
+                description: 'Universities and educational institutions can issue tamper-proof degrees, certificates, and academic credentials that can be instantly verified worldwide.',
+                link: '/use-cases/education'
+              },
+              {
+                title: 'Professional Licensing',
+                description: 'Professional bodies can issue licenses and certifications that are always up-to-date and can be verified immediately by employers or clients.',
+                link: '/use-cases/licensing'
+              },
+              {
+                title: 'Event Management',
+                description: 'Create secure, non-transferable event passes and tickets that can be verified with a quick QR scan, eliminating fraud and unauthorized access.',
+                link: '/use-cases/events'
+              },
+              {
+                title: 'Corporate Identity',
+                description: 'Companies can issue verifiable employee credentials that prove employment status while maintaining privacy and security.',
+                link: '/use-cases/corporate'
+              }
+            ].map((useCase, index) => (
+              <div key={index} className="glass-panel p-6 group">
+                <div className="card-highlight"></div>
+                <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
+                <p className="text-gray-300 mb-4">{useCase.description}</p>
+                <Link to={useCase.link} className="text-primary-400 hover:text-primary-300 inline-flex items-center">
+                  Learn more <ChevronRight size={16} className="ml-1" />
+                </Link>
               </div>
-            </div>
-            
-            {/* Use Case 2 */}
-            <div className="glass-panel p-6 hover:border-neon-purple/30 hover:shadow-neon transition-all duration-300">
-              <h3 className="text-xl font-semibold mb-4">Event Access Control</h3>
-              <p className="text-gray-400 mb-4">
-                Create tamper-proof digital passes for conferences, concerts, and exclusive events with QR verification.
-              </p>
-              <div className="flex items-center text-sm text-neon-purple">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                <span>Prevent counterfeit tickets</span>
-              </div>
-            </div>
-            
-            {/* Use Case 3 */}
-            <div className="glass-panel p-6 hover:border-neon-pink/30 hover:shadow-neon transition-all duration-300">
-              <h3 className="text-xl font-semibold mb-4">Educational Certificates</h3>
-              <p className="text-gray-400 mb-4">
-                Issue and verify diplomas, certifications, and course completions with blockchain-backed security.
-              </p>
-              <div className="flex items-center text-sm text-neon-pink">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                <span>Lifelong credential access</span>
-              </div>
-            </div>
-            
-            {/* Use Case 4 */}
-            <div className="glass-panel p-6 hover:border-accent-500/30 hover:shadow-neon transition-all duration-300">
-              <h3 className="text-xl font-semibold mb-4">DAO Contributor Proof</h3>
-              <p className="text-gray-400 mb-4">
-                Validate contributions, governance participation, and reputation in decentralized organizations.
-              </p>
-              <div className="flex items-center text-sm text-accent-500">
-                <CheckCircle className="w-4 h-4 mr-2" />
-                <span>Transparent contribution tracking</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 md:py-24 bg-dark-800/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to transform credential verification?
-            </h2>
-            <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
-              Join the decentralized credential revolution today.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button 
-                onClick={handleGetStarted} 
-                className="btn bg-gradient-to-r from-neon-blue to-neon-purple text-dark-900 font-medium hover:shadow-neon transition-all duration-300"
-              >
-                Get Started
-              </button>
-              <button 
-                onClick={() => navigate('/about')} 
-                className="btn btn-ghost"
-              >
-                Learn More
-              </button>
-            </div>
+      <section className="py-16 bg-gradient-to-r from-primary-900 to-secondary-900">
+        <div className="container mx-auto px-4 md:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
+            Ready to Transform Your Credentials?
+          </h2>
+          <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
+            Join the decentralized credential revolution today. Start issuing, sharing, 
+            and verifying credentials in a secure, immutable, and visually stunning way.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link to="/dashboard" className="btn bg-white text-primary-900 hover:bg-gray-100 text-lg px-8 py-3">
+              Get Started
+            </Link>
+            <Link to="/verify" className="btn btn-outline border-white text-white hover:bg-white/10 text-lg px-8 py-3">
+              Verify a Credential
+            </Link>
           </div>
         </div>
       </section>
